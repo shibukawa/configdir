@@ -45,7 +45,7 @@ Getting Configuration
 
    var config Config
 
-   configDirs := configdir.NewConfigDir("vendor-name", "application-name")
+   configDirs := configdir.New("vendor-name", "application-name")
    // optional: local path has the highest priority
    configDirs.LocalPath, _ = filepath.Abs(".")
    folder := configDirs.QueryFolderContainsFile("setting.json")
@@ -63,7 +63,7 @@ When storing configuration, get configuration folder by using ``configdir.Config
 
 .. code-block:: go
 
-   configDirs := configdir.NewConfigDir("vendor-name", "application-name")
+   configDirs := configdir.New("vendor-name", "application-name")
 
    var config Config
    data, _ := json.Marshal(&config)
@@ -87,7 +87,7 @@ It is similar to the above example, but returns cache folder.
 
 .. code-block:: go
 
-   configDirs := configdir.NewConfigDir("vendor-name", "application-name")
+   configDirs := configdir.New("vendor-name", "application-name")
    cache := configDirs.QueryCacheFolder()
 
    resp, err := http.Get("http://examples.com/sdk.zip")

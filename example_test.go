@@ -3,10 +3,10 @@ package configdir_test
 import (
 	"encoding/json"
 	"github.com/shibukawa/configdir"
-	"path/filepath"
-	"net/http"
-	"log"
 	"io/ioutil"
+	"log"
+	"net/http"
+	"path/filepath"
 )
 
 type Config struct {
@@ -22,7 +22,7 @@ func ExampleConfigDir() {
 
 	var config Config
 
-	configDirs := configdir.NewConfigDir("vendor-name", "application-name")
+	configDirs := configdir.New("vendor-name", "application-name")
 	// optional: local path has the highest priority
 	configDirs.LocalPath, _ = filepath.Abs(".")
 	folder := configDirs.QueryFolderContainsFile("setting.json")
@@ -36,7 +36,7 @@ func ExampleConfigDir() {
 
 // Sample for reading configuration
 func ExampleConfigDir_QueryFolders() {
-	configDirs := configdir.NewConfigDir("vendor-name", "application-name")
+	configDirs := configdir.New("vendor-name", "application-name")
 
 	var config Config
 	data, _ := json.Marshal(&config)
@@ -56,7 +56,7 @@ func ExampleConfigDir_QueryFolders() {
 
 // Sample for getting cache folder
 func ExampleConfigDir_QueryCacheFolder() {
-	configDirs := configdir.NewConfigDir("vendor-name", "application-name")
+	configDirs := configdir.New("vendor-name", "application-name")
 	cache := configDirs.QueryCacheFolder()
 
 	resp, err := http.Get("http://examples.com/sdk.zip")

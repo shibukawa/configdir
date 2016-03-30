@@ -74,7 +74,7 @@ type ConfigDir struct {
 	LocalPath       string
 }
 
-func NewConfigDir(vendorName, applicationName string) ConfigDir {
+func New(vendorName, applicationName string) ConfigDir {
 	return ConfigDir{
 		VendorName:      vendorName,
 		ApplicationName: applicationName,
