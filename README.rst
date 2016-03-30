@@ -10,21 +10,22 @@ It assumes the following folders are standard paths of each environment:
 .. list-table::
    :header-rows: 1
 
-   * - Windows:
-     - Linux/BSDs:
-     - MacOSX:
-   * - System level configuration folder
-     - ``%PROGRAMDATA%`` (``C:\\ProgramData``)
-     - ``${XDG_CONFIG_DIRS}`` (``/etc/xdg``)
-     - ``/Library/Application Support``
-   * - User level configuration folder
-     - ``%APPDATA%`` (``C:\\Users\\<User>\\AppData\\Roaming``)
-     - ``${XDG_CONFIG_HOME}`` (``${HOME}/.config``)
-     - ``${HOME}/Library/Application Support``
-   * - User wide cache folder
-     - ``%LOCALAPPDATA%`` ``(C:\\Users\\<User>\\AppData\\Local)``
-     - ``${XDG_CACHE_HOME}`` (``${HOME}/.cache``)
-     - ``${HOME}/Library/Caches``
+   - * 
+     * Windows:
+     * Linux/BSDs:
+     * MacOSX:
+   - * System level configuration folder
+     * ``%PROGRAMDATA%`` (``C:\\ProgramData``)
+     * ``${XDG_CONFIG_DIRS}`` (``/etc/xdg``)
+     * ``/Library/Application Support``
+   - * User level configuration folder
+     * ``%APPDATA%`` (``C:\\Users\\<User>\\AppData\\Roaming``)
+     * ``${XDG_CONFIG_HOME}`` (``${HOME}/.config``)
+     * ``${HOME}/Library/Application Support``
+   - * User wide cache folder
+     * ``%LOCALAPPDATA%`` ``(C:\\Users\\<User>\\AppData\\Local)``
+     * ``${XDG_CACHE_HOME}`` (``${HOME}/.cache``)
+     * ``${HOME}/Library/Caches``
 
 Examples
 ------------
@@ -40,7 +41,7 @@ Getting Configuration
 
 ``configdir.Config`` provides some convenient methods(``ReadFile``, ``WriteFile`` and so on).
 
-.. code-block:: golang
+.. code-block:: go
 
    var config Config
 
@@ -60,7 +61,7 @@ Write Configuration
 
 When storing configuration, get configuration folder by using ``configdir.ConfigDir.QueryFolders()`` method.
 
-.. code-block:: golang
+.. code-block:: go
 
    configDirs := configdir.NewConfigDir("vendor-name", "application-name")
 
@@ -84,7 +85,7 @@ Getting Cache Folder
 
 It is similar to the above example, but returns cache folder.
 
-.. code-block:: golang
+.. code-block:: go
 
    configDirs := configdir.NewConfigDir("vendor-name", "application-name")
    cache := configDirs.QueryCacheFolder()
