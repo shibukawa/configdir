@@ -67,6 +67,11 @@ func (c Config) MkdirAll() error {
 	return os.MkdirAll(c.Path, 0755)
 }
 
+func (c Config) Exists(fileName string) bool {
+	_, err := os.Stat(filepath.Join(c.Path, fileName))
+	return !os.IsNotExist(err)
+}
+
 // ConfigDir keeps setting for querying folders.
 type ConfigDir struct {
 	VendorName      string
