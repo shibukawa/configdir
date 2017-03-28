@@ -50,8 +50,15 @@ func (c Config) Open(fileName string) (*os.File, error) {
 }
 
 func (c Config) Create(fileName string) (*os.File, error) {
-	c.MkdirAll()
-	return os.Create(filepath.Join(c.Path, fileName))
+	// fileName could contain path separators, in which case c.MkdirAll() would
+	// not create all required path elements. Instead, build full path first,
+	// then create parent directory of resulting file.
+	file := filepath.Join(c.Path, fileName)
+	err := os.MkdirAll(filepath.Dir(file), 0755)
+	if err != nil {
+		return nil, err
+	}
+	return os.Create(file)
 }
 
 func (c Config) ReadFile(fileName string) ([]byte, error) {
