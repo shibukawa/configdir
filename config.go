@@ -80,8 +80,12 @@ func (c Config) MkdirAll() error {
 }
 
 func (c Config) Exists(fileName string) bool {
-	_, err := os.Stat(filepath.Join(c.Path, fileName))
-	return !os.IsNotExist(err)
+	return fileExists(filepath.Join(c.Path, fileName))
+}
+
+func fileExists(fullPath string) bool {
+	info, err := os.Stat(fullPath)
+	return err == nil && info.Mode().IsRegular()
 }
 
 // ConfigDir keeps setting for querying folders.
@@ -135,7 +139,7 @@ func (c ConfigDir) QueryFolders(configType ConfigType) []*Config {
 	}
 	var existing []*Config
 	for _, entry := range result {
-		if _, err := os.Stat(entry.Path); !os.IsNotExist(err) {
+		if fileExists(entry.Path) {
 			existing = append(existing, entry)
 		}
 	}
@@ -145,7 +149,7 @@ func (c ConfigDir) QueryFolders(configType ConfigType) []*Config {
 func (c ConfigDir) QueryFolderContainsFile(fileName string) *Config {
 	configs := c.QueryFolders(Existing)
 	for _, config := range configs {
-		if _, err := os.Stat(filepath.Join(config.Path, fileName)); !os.IsNotExist(err) {
+		if fileExists(filepath.Join(config.Path, fileName)) {
 			return config
 		}
 	}
