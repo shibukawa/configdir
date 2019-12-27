@@ -3,7 +3,9 @@ configdir for Golang
 
 Multi platform library of configuration directory for Golang.
 
-This library helps to get regular directories for configuration files or cache files that matches target operationg system's convention.
+Originally based on https://github.com/shibukawa/configdir
+
+This library helps to get regular directories for configuration files or cache files that matches target operating system's convention.
 
 It assumes the following folders are standard paths of each environment:
 
@@ -99,10 +101,10 @@ It is similar to the above example, but returns cache folder.
 
    cache.WriteFile("sdk.zip", body)
 
-Document
+Docs
 ------------
 
-https://godoc.org/github.com/shibukawa/configdir
+https://godoc.org/github.com/uinta-labs/configdir
 
 License
 ------------
