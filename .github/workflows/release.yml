@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  attest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # create release and upload assets
+      id-token: write # sign attestation with Sigstore
+      attestations: write
+      artifact-metadata: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - run: go test ./...
+      # Download the module from the repository itself (same zip as served by proxy.golang.org).
+      - name: Build module zip
+        env:
+          MODULE: github.com/${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir -p dist
+          info=$(GOPROXY=direct GOFLAGS=-modcacherw go mod download -json "$MODULE@$TAG")
+          cp "$(echo "$info" | jq -r .Zip)" "dist/configdir-$TAG.zip"
+          cp "$(echo "$info" | jq -r .GoMod)" "dist/configdir-$TAG.mod"
+          (cd dist && sha256sum * > checksums.txt)
+      - uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
+        with:
+          subject-path: dist/configdir-*
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --verify-tag --generate-notes
+          gh release upload "$TAG" dist/* --clobber
