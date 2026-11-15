@@ -13,10 +13,18 @@ import (
 func TestConfigFS(t *testing.T) {
 	dir := t.TempDir()
 	c := Config{Path: dir, Type: Local}
-	if err := c.WriteFile("sub/setting.json", []byte("{}")); err != nil {
-		t.Fatal(err)
+	files := []string{"setting.json"}
+	// On Windows, the ModTime of a folder in its parent's listing may lag behind os.Stat
+	// after creating a file in it, and fstest.TestFS reports it as a mismatch.
+	if runtime.GOOS != "windows" {
+		files = append(files, "sub/setting.json")
 	}
-	if err := fstest.TestFS(c.FS(), "sub/setting.json"); err != nil {
+	for _, name := range files {
+		if err := c.WriteFile(name, []byte("{}")); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if err := fstest.TestFS(c.FS(), files...); err != nil {
 		t.Fatal(err)
 	}
 }
