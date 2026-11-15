@@ -27,3 +27,11 @@ func xdgFolders(home string) (system []string, global, cache string) {
 	}
 	return
 }
+
+// xdgDataDirs returns system wide data folders (${XDG_DATA_DIRS}).
+func xdgDataDirs() []string {
+	if os.Getenv("XDG_DATA_DIRS") != "" {
+		return strings.Split(os.Getenv("XDG_DATA_DIRS"), ":")
+	}
+	return []string{"/usr/local/share", "/usr/share"}
+}
