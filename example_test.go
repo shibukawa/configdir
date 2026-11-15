@@ -2,11 +2,13 @@ package configdir_test
 
 import (
 	"encoding/json"
-	"github.com/shibukawa/configdir"
-	"io/ioutil"
+	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"path/filepath"
+
+	"github.com/shibukawa/configdir"
 )
 
 type Config struct {
@@ -64,7 +66,21 @@ func ExampleConfigDir_QueryCacheFolder() {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 
 	cache.WriteFile("sdk.zip", body)
+}
+
+// Sample for reading configuration via fs.FS
+func ExampleConfigDir_FS() {
+	var config Config
+
+	configDirs := configdir.New("vendor-name", "application-name")
+	configDirs.LocalPath, _ = filepath.Abs(".")
+	data, err := fs.ReadFile(configDirs.FS(), "setting.json")
+	if err == nil {
+		json.Unmarshal(data, &config)
+	} else {
+		config = DefaultConfig
+	}
 }
