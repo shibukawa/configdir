@@ -24,7 +24,8 @@ jobs:
           go-version-file: go.mod
           cache-dependency-path: go.sum
       - run: go test ./...
-      # Download the module from the repository itself (same zip as served by proxy.golang.org).
+      # Download the module from the repository itself. The zip is not byte-identical to the one
+      # served by proxy.golang.org, but has the same content (the same h1: hash in sum.golang.org).
       - name: Build module zip
         env:
           MODULE: github.com/${{ github.repository }}
