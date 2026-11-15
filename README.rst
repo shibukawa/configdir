@@ -84,6 +84,39 @@ Using fs.FS
    configDirs.LocalPath, _ = filepath.Abs(".")
    data, err := fs.ReadFile(configDirs.FS(), "setting.json")
 
+Reading Installed Resources
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+``configdir.ConfigDir.QueryResourceFolders()`` returns read-only folders that contain files installed with the application (default settings, templates, assets and so on).
+The install location differs by package manager, so it is detected from the executable path (symbolic links are resolved):
+
+.. list-table::
+   :header-rows: 1
+
+   - * Executable
+     * Resource folder
+   - * ``<prefix>/bin/app`` (``/usr``, ``/usr/local``, Homebrew, snap, Flatpak, AppImage...)
+     * ``<prefix>/share/<application-name>``
+   - * ``X.app/Contents/MacOS/app`` (macOS app bundle)
+     * ``X.app/Contents/Resources``
+   - * ``<dir>\app.exe`` (Windows)
+     * ``<dir>``
+
+On Linux/BSDs (and macOS with ``XDG = true``), ``${XDG_DATA_DIRS}/<application-name>`` (``/usr/local/share``, ``/usr/share``) is searched next.
+``ResourcePath`` has the highest priority. It is useful for development because ``go run`` and ``go test`` build the executable into a temporary folder.
+
+``ResourceFS()`` returns an ``fs.FS`` over the folders. ``embed.FS`` can be passed as fallback:
+
+.. code-block:: go
+
+   //go:embed resources
+   var embedded embed.FS
+
+   configDirs := configdir.New("vendor-name", "application-name")
+   configDirs.ResourcePath = os.Getenv("APP_RESOURCE_PATH") // optional
+   resources, _ := fs.Sub(embedded, "resources")
+   data, err := fs.ReadFile(configDirs.ResourceFS(resources), "template.html")
+
 Write Configuration
 ~~~~~~~~~~~~~~~~~~~~~~
 

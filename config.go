@@ -48,6 +48,9 @@ const (
 	// Confined is a user level folder inside a sandbox (e.g. snap's $HOME/snap/<name>/<revision>/.config).
 	// It is returned after Global when the application runs confined.
 	Confined
+	// Resource is a read-only folder that contains files installed with the application.
+	// See ConfigDir.QueryResourceFolders.
+	Resource
 )
 
 const (
@@ -228,8 +231,11 @@ type ConfigDir struct {
 	VendorName      string
 	ApplicationName string
 	LocalPath       string
+	// ResourcePath is a resource folder that has the highest priority (e.g. for development
+	// with go run). See QueryResourceFolders.
+	ResourcePath string
 	// XDG uses XDG Base Directory Specification on macOS too
-	// (${XDG_CONFIG_HOME}, ${XDG_CONFIG_DIRS} and ${XDG_CACHE_HOME}).
+	// (${XDG_CONFIG_HOME}, ${XDG_CONFIG_DIRS}, ${XDG_CACHE_HOME} and ${XDG_DATA_DIRS}).
 	// It is always used on Linux/BSDs and ignored on Windows.
 	XDG bool
 	// FileMode and DirMode are passed to Config. See Config.

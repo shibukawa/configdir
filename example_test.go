@@ -6,7 +6,9 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
+	"testing/fstest"
 
 	"github.com/shibukawa/configdir"
 )
@@ -83,4 +85,16 @@ func ExampleConfigDir_FS() {
 	} else {
 		config = DefaultConfig
 	}
+}
+
+// Sample for reading files installed with the application
+func ExampleConfigDir_ResourceFS() {
+	configDirs := configdir.New("vendor-name", "application-name")
+	// optional: highest priority (e.g. for go run)
+	configDirs.ResourcePath = os.Getenv("APP_RESOURCE_PATH")
+
+	// embedded files can be passed as fallback (e.g. embed.FS)
+	embedded := fstest.MapFS{"template.html": {Data: []byte("<html></html>")}}
+	data, _ := fs.ReadFile(configDirs.ResourceFS(embedded), "template.html")
+	_ = data
 }
